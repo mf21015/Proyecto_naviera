@@ -45,3 +45,6 @@ python manage.py createsuperuser
 # Iniciar el servidor de desarrollo
 python manage.py runserver
 
+# Para ocupar Docker
+docker build -t naviera .
+docker run -p 8000:8000 naviera
