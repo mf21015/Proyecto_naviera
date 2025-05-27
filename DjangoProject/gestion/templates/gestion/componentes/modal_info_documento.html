@@ -1,0 +1,56 @@
+<div class="modal fade" id="infoModal{{ doc.id }}" tabindex="-1" aria-labelledby="infoModalLabel{{ doc.id }}" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="infoModalLabel{{ doc.id }}">📄 Información del Documento</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group mb-3">
+          <li class="list-group-item"><strong>Ruta:</strong> {{ doc.ruta_puerto.ruta.nombre }}</li>
+          <li class="list-group-item"><strong>Puerto:</strong> {{ doc.ruta_puerto.puerto.nombre }}</li>
+          <li class="list-group-item"><strong>Tipo:</strong> {{ doc.tipo }}</li>
+          <li class="list-group-item"><strong>Descripción:</strong> {{ doc.descripcion }}</li>
+          <li class="list-group-item"><strong>Archivo:</strong> <a href="{{ doc.archivo_pdf.url }}" target="_blank">{{ doc.archivo_pdf.name }}</a></li>
+          <li class="list-group-item"><strong>Subido por:</strong> {{ doc.creado_por.username }}</li>
+          <li class="list-group-item"><strong>Estado actual:</strong>
+            {% if doc.es_valido is True %}✔️ Válido
+            {% elif doc.es_valido is False %}❌ No válido
+            {% else %}⏳ Pendiente
+            {% endif %}
+          </li>
+          <li class="list-group-item"><strong>Observación:</strong> {{ doc.observacion }}</li>
+          <li class="list-group-item"><strong>Fecha:</strong> {{ doc.fecha_emision|date:"Y-m-d H:i" }}</li>
+        </ul>
+
+        {% if user.rol == 'supervisor' %}
+        <hr>
+        <form method="post" action="{% url 'actualizar_validacion_modal' doc.id %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="es_valido_{{ doc.id }}" class="form-label"><strong>Modificar estado:</strong></label>
+            <select name="es_valido" id="es_valido_{{ doc.id }}" class="form-select">
+              <option value="" {% if doc.es_valido == None %}selected{% endif %}>⏳ Pendiente</option>
+              <option value="True" {% if doc.es_valido == True %}selected{% endif %}>✔️ Válido</option>
+              <option value="False" {% if doc.es_valido == False %}selected{% endif %}>❌ No válido</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="observacion_{{ doc.id }}" class="form-label"><strong>Observación:</strong></label>
+            <textarea name="observacion" id="observacion_{{ doc.id }}" class="form-control" rows="3" placeholder="Escriba un comentario...">{{ doc.observacion }}</textarea>
+          </div>
+
+          <div class="text-end">
+            <button type="submit" class="btn btn-success">Actualizar validación</button>
+          </div>
+        </form>
+        {% endif %}
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

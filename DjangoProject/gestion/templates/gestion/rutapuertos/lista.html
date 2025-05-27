@@ -1,0 +1,24 @@
+{% extends 'gestion/base.html' %}
+{% block content %}
+<h2>Asignaciones de Puertos a Rutas</h2>
+<a href="{% url 'crear_rutapuerto' %}" class="btn btn-success mb-3">Asignar nuevo</a>
+<table class="table table-bordered">
+  <thead>
+    <tr><th>ID</th><th>Ruta</th><th>Puerto</th><th>Orden</th><th>Acciones</th></tr>
+  </thead>
+  <tbody>
+    {% for rp in rutapuertos %}
+      <tr>
+        <td>{{ rp.id }}</td>
+        <td>{{ rp.ruta.nombre }}</td>
+        <td>{{ rp.puerto.nombre }}</td>
+        <td>{{ rp.orden }}</td>
+        <td>
+          <a href="{% url 'editar_rutapuerto' rp.id %}" class="btn btn-warning btn-sm">Editar</a>
+          <a href="{% url 'eliminar_rutapuerto' rp.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

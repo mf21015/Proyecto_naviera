@@ -1,0 +1,21 @@
+{% extends 'gestion/base.html' %}
+{% block content %}
+<h2>Lista de Puertos</h2>
+<a href="{% url 'crear_puerto' %}" class="btn btn-success mb-3">Agregar nuevo puerto</a>
+<table class="table table-bordered">
+  <thead><tr><th>ID</th><th>Nombre</th><th>País</th><th>Acciones</th></tr></thead>
+  <tbody>
+    {% for puerto in puertos %}
+    <tr>
+      <td>{{ puerto.id }}</td>
+      <td>{{ puerto.nombre }}</td>
+      <td>{{ puerto.pais }}</td>
+      <td>
+        <a href="{% url 'editar_puerto' puerto.id %}" class="btn btn-warning btn-sm">Editar</a>
+        <a href="{% url 'eliminar_puerto' puerto.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

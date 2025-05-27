@@ -1,0 +1,53 @@
+{% extends "gestion/base.html" %}
+
+{% block content %}
+<h2>Información General del Sistema</h2>
+
+<h4 class="mt-4">Puertos</h4>
+<table class="table table-bordered">
+  <thead>
+    <tr><th>ID</th><th>Nombre</th><th>País</th></tr>
+  </thead>
+  <tbody>
+    {% for p in puertos %}
+      <tr>
+        <td>{{ p.id }}</td>
+        <td>{{ p.nombre }}</td>
+        <td>{{ p.pais }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h4 class="mt-4">Rutas</h4>
+<table class="table table-bordered">
+  <thead>
+    <tr><th>ID</th><th>Nombre</th></tr>
+  </thead>
+  <tbody>
+    {% for r in rutas %}
+      <tr>
+        <td>{{ r.id }}</td>
+        <td>{{ r.nombre }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h4 class="mt-4">Ruta - Puertos</h4>
+<table class="table table-bordered">
+  <thead>
+    <tr><th>ID</th><th>Ruta</th><th>Puerto</th><th>Orden</th></tr>
+  </thead>
+  <tbody>
+    {% for rp in ruta_puertos %}
+      <tr>
+        <td>{{ rp.id }}</td>
+        <td>{{ rp.ruta.nombre }}</td>
+        <td>{{ rp.puerto.nombre }}</td>
+        <td>{{ rp.orden }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

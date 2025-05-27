@@ -1,0 +1,59 @@
+{% extends 'gestion/base.html' %}
+{% block content %}
+
+<h2>Lista de Usuarios</h2>
+
+<form method="get" class="row g-2 mb-3">
+  <div class="col-md-4">
+    <input type="text" name="username" class="form-control" placeholder="Buscar por usuario" value="{{ request.GET.username }}">
+  </div>
+  <div class="col-md-3">
+    <select name="rol" class="form-select">
+      <option value="">-- Rol --</option>
+      <option value="normal" {% if request.GET.rol == 'normal' %}selected{% endif %}>Usuario Normal</option>
+      <option value="supervisor" {% if request.GET.rol == 'supervisor' %}selected{% endif %}>Supervisor</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <select name="puerto" class="form-select">
+      <option value="">-- Puerto --</option>
+      {% for p in puertos %}
+        <option value="{{ p.id }}" {% if request.GET.puerto == p.id|stringformat:"s" %}selected{% endif %}>{{ p.nombre }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2">
+    <button type="submit" class="btn btn-outline-primary w-100">Filtrar</button>
+  </div>
+</form>
+
+<table class="table table-bordered mt-3">
+  <thead class="table-dark">
+    <tr>
+      <th>Username</th>
+      <th>Nombres</th>
+      <th>Apellidos</th>
+      <th>Rol</th>
+      <th>Puerto</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in usuarios %}
+      <tr>
+        <td>{{ user.username }}</td>
+        <td>{{ user.first_name }}</td>
+        <td>{{ user.last_name }}</td>
+        <td>{{ user.get_rol_display }}</td>
+        <td>{{ user.puerto.nombre }}</td>
+        <td>
+          <a href="{% url 'editar_usuario' user.id %}" class="btn btn-sm btn-warning">Editar</a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="6" class="text-center">No hay usuarios que coincidan.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

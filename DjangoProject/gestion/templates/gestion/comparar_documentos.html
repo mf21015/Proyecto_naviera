@@ -1,0 +1,139 @@
+{% extends 'gestion/base.html' %}
+
+{% block content %}
+<h2>Comparación de Documentos por Ruta y Puerto</h2>
+
+<!-- Resumen numérico -->
+<div class="row text-center mb-4">
+  <div class="col-md-3">
+    <div class="card bg-light">
+      <div class="card-body">
+        <h5 class="card-title">📄 Total</h5>
+        <p class="fs-4 fw-bold text-dark">{{ resumen.total }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card bg-success text-white">
+      <div class="card-body">
+        <h5 class="card-title">✔️ Validados</h5>
+        <p class="fs-4 fw-bold">{{ resumen.validados }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card bg-warning text-dark">
+      <div class="card-body">
+        <h5 class="card-title">⏳ Pendientes</h5>
+        <p class="fs-4 fw-bold">{{ resumen.pendientes }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card bg-danger text-white">
+      <div class="card-body">
+        <h5 class="card-title">❌ No válidos</h5>
+        <p class="fs-4 fw-bold">{{ resumen.invalidados }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filtros -->
+<form method="get" class="row g-2 mb-3">
+
+  <div class="col-md-3">
+    <select name="ruta" class="form-select">
+      <option value="">-- Ruta --</option>
+      {% for r in rutas %}
+        <option value="{{ r.id }}" {% if request.GET.ruta == r.id|stringformat:"s" %}selected{% endif %}>{{ r.nombre }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <select name="puerto" class="form-select">
+      <option value="">-- Puerto --</option>
+      {% for p in puertos %}
+        <option value="{{ p.id }}" {% if request.GET.puerto == p.id|stringformat:"s" %}selected{% endif %}>{{ p.nombre }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-2">
+    <select name="validez" class="form-select">
+      <option value="">-- Estado --</option>
+      <option value="valido" {% if request.GET.validez == 'valido' %}selected{% endif %}>✔️ Válido</option>
+      <option value="invalido" {% if request.GET.validez == 'invalido' %}selected{% endif %}>❌ No válido</option>
+      <option value="pendiente" {% if request.GET.validez == 'pendiente' %}selected{% endif %}>⏳ Pendiente</option>
+      <option value="no_pendiente" {% if request.GET.validez == 'no_pendiente' %}selected{% endif %}>🔎 Revisados</option>
+    </select>
+  </div>
+
+  <div class="col-md-2">
+    <input type="text" name="usuario" class="form-control" placeholder="Buscar por usuario"
+           value="{{ request.GET.usuario }}">
+  </div>
+
+<div class="col-md-2">
+  <input type="date" name="fecha" class="form-control" placeholder="Fecha"
+         value="{{ request.GET.fecha }}">
+</div>
+
+
+  <div class="col-md-1">
+    <button type="submit" class="btn btn-outline-primary w-100">Filtrar</button>
+  </div>
+
+</form>
+
+
+<!-- Tabla -->
+<table class="table table-bordered table-hover">
+  <thead class="table-dark">
+    <tr>
+      <th>Ruta</th>
+      <th>Puerto</th>
+      <th>Tipo</th>
+      <th>Descripción</th>
+      <th>Acciones</th>
+      <th>Fecha</th>
+      <th>Usuario</th>
+      <th>¿Válido?</th>
+      <th>Observación</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for doc in documentos %}
+      <tr>
+        <td>{{ doc.ruta_puerto.ruta.nombre }}</td>
+        <td>{{ doc.ruta_puerto.puerto.nombre }}</td>
+        <td>{{ doc.tipo }}</td>
+        <td>{{ doc.descripcion }}</td>
+        <td class="d-flex flex-column">
+          <a href="{{ doc.archivo_pdf.url }}" target="_blank" class="btn btn-sm btn-outline-primary mb-1">Ver PDF</a>
+          <button type="button" class="btn btn-sm btn-outline-secondary mb-1" data-bs-toggle="modal" data-bs-target="#infoModal{{ doc.id }}">
+            Más información y Validación
+          </button>
+        </td>
+        <td>{{ doc.fecha_emision|date:"Y-m-d H:i" }}</td>
+        <td>{{ doc.creado_por.username }}</td>
+        <td class="text-center">
+          {% if doc.es_valido is True %}✔️
+          {% elif doc.es_valido is False %}❌
+          {% else %}⏳
+          {% endif %}
+        </td>
+        <td>{{ doc.observacion }}</td>
+      </tr>
+
+      {% include 'gestion/componentes/modal_info_documento.html' with doc=doc %}
+    {% empty %}
+      <tr>
+        <td colspan="9" class="text-center">No hay documentos que coincidan.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

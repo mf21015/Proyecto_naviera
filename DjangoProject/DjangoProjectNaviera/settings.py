@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'home',
+    'gestion',
 ]
 
 MIDDLEWARE = [
@@ -74,12 +74,25 @@ WSGI_APPLICATION = 'DjangoProjectNaviera.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql', # Motor de la base de datos
+        'NAME': 'naviera',   # Nombre de la base de datos
+        'USER': 'admin', # Usuario de la base de datos
+        'PASSWORD': 'admin', # Contraseña del usuario
+        'HOST': 'localhost', # Dirección del servidor de la base de datos
+        'PORT': '5432',
     }
 }
+
+
 
 
 # Password validation
@@ -122,3 +135,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+import os
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+AUTH_USER_MODEL = 'gestion.CustomUser'
+LOGIN_URL = '/login/'

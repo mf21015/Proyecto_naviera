@@ -1,0 +1,15 @@
+{% extends 'gestion/base.html' %}
+{% block content %}
+<h2>Validar Documento</h2>
+
+<p><strong>Tipo:</strong> {{ doc.tipo }}</p>
+<p><strong>Descripción:</strong> {{ doc.descripcion }}</p>
+<p><strong>PDF:</strong> <a href="{{ doc.archivo_pdf.url }}" target="_blank">Ver documento</a></p>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">Guardar validación</button>
+  <a href="{% url 'comparar_documentos' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}
