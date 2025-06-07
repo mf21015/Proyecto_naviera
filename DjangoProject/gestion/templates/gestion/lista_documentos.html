@@ -1,110 +1,108 @@
 {% extends 'gestion/base.html' %}
 
 {% block content %}
-    <h2>Documentos Registrados</h2>
+<h2 class="mb-4">📄 Documentos Registrados</h2>
 
-    <!-- Mostrar botón para exportar solo para supervisores -->
-    {% if user.rol == 'supervisor' or user.rol == 'normal'%}
-        <a href="{% url 'exportar_documentos' %}" class="btn btn-success mb-3">Descargar resumen (Excel)</a>
-    {% endif %}
+{% if user.rol == 'supervisor' or user.rol == 'normal' %}
+  <a href="{% url 'exportar_documentos' %}" class="btn btn-success mb-3">⬇️ Descargar resumen (Excel)</a>
+{% endif %}
 
-    <!-- Filtros para todos los usuarios -->
-   <form method="get" class="row mb-3 g-2">
-    {% if user.rol == 'supervisor' %}
-        <div class="col-md-3">
-            <input type="text" name="usuario" class="form-control" placeholder="Buscar por usuario"
-                   value="{{ request.GET.usuario }}">
-        </div>
-        <div class="col-md-3">
-            <select name="ruta" class="form-select">
-                <option value="">-- Ruta --</option>
-                {% for r in rutas %}
-                    <option value="{{ r.id }}" {% if request.GET.ruta == r.id|stringformat:"s" %}selected{% endif %}>{{ r.nombre }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-md-3">
-            <select name="puerto" class="form-select">
-                <option value="">-- Puerto --</option>
-                {% for p in puertos %}
-                    <option value="{{ p.id }}" {% if request.GET.puerto == p.id|stringformat:"s" %}selected{% endif %}>{{ p.nombre }}</option>
-                {% endfor %}
-            </select>
-        </div>
-    {% endif %}
+<!-- Filtros -->
+<form method="get" class="row mb-4 g-2 align-items-end">
+  {% if user.rol == 'supervisor' %}
+    <div class="col-md-3">
+      <input type="text" name="usuario" class="form-control" placeholder="Usuario" value="{{ request.GET.usuario }}">
+    </div>
+    <div class="col-md-3">
+      <select name="ruta" class="form-select">
+        <option value="">-- Ruta --</option>
+        {% for r in rutas %}
+          <option value="{{ r.id }}" {% if request.GET.ruta == r.id|stringformat:"s" %}selected{% endif %}>{{ r.nombre }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <select name="puerto" class="form-select">
+        <option value="">-- Puerto --</option>
+        {% for p in puertos %}
+          <option value="{{ p.id }}" {% if request.GET.puerto == p.id|stringformat:"s" %}selected{% endif %}>{{ p.nombre }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  {% endif %}
 
   <div class="col-md-3">
-    <input type="date" name="fecha" class="form-control" placeholder="Filtrar por fecha"
-           value="{{ request.GET.fecha }}">
+    <input type="date" name="fecha" class="form-control" value="{{ request.GET.fecha }}">
   </div>
 
-    <div class="{% if user.rol == 'supervisor' %}col-md-2{% else %}col-md-6{% endif %}">
-        <select name="validez" class="form-select">
-            <option value="">-- Estado --</option>
-            <option value="valido" {% if request.GET.validez == 'valido' %}selected{% endif %}>Válido</option>
-            <option value="invalido" {% if request.GET.validez == 'invalido' %}selected{% endif %}>No válido</option>
-            <option value="pendiente" {% if request.GET.validez == 'pendiente' %}selected{% endif %}>Pendiente</option>
-        </select>
-    </div>
-    <div class="{% if user.rol == 'supervisor' %}col-md-1{% else %}col-md-6{% endif %}">
-        <button class="btn btn-outline-primary w-100" type="submit">Filtrar</button>
-    </div>
+  <div class="{% if user.rol == 'supervisor' %}col-md-2{% else %}col-md-6{% endif %}">
+    <select name="validez" class="form-select">
+      <option value="">-- Estado --</option>
+      <option value="valido" {% if request.GET.validez == 'valido' %}selected{% endif %}>✔️ Válido</option>
+      <option value="invalido" {% if request.GET.validez == 'invalido' %}selected{% endif %}>❌ No válido</option>
+      <option value="pendiente" {% if request.GET.validez == 'pendiente' %}selected{% endif %}>⏳ Pendiente</option>
+    </select>
+  </div>
+
+  <div class="{% if user.rol == 'supervisor' %}col-md-1{% else %}col-md-6{% endif %}">
+    <button type="submit" class="btn btn-outline-primary w-100">🔍 Filtrar</button>
+  </div>
 </form>
 
-
-    <table class="table table-striped mt-3">
-        <thead>
+<!-- Tabla -->
+<div class="table-responsive">
+  <table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark text-center">
+      <tr>
+        <th>ID</th>
+        <th>Tipo</th>
+        <th>Puerto</th>
+        <th>Ruta</th>
+        <th>Archivo</th>
+        <th>Fecha</th>
+        <th>¿Válido?</th>
+        {% if user.rol == 'supervisor' %}
+          <th>Subido por</th>
+        {% endif %}
+        <th>Observación</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for doc in documentos %}
         <tr>
-            <th>ID</th>
-            <th>Tipo</th>
-            <th>Puerto</th>
-            <th>Ruta</th>
-            <th>Archivo</th>
-            <th>Fecha</th>
-            <th>¿Válido?</th>
-            {% if user.rol == 'supervisor' %}
-                <th>Subido por</th>
+          <td>{{ doc.id }}</td>
+          <td>{{ doc.tipo }}</td>
+          <td>{{ doc.ruta_puerto.puerto.nombre }}</td>
+          <td>{{ doc.ruta_puerto.ruta.nombre }}</td>
+          <td>
+            <a href="{{ doc.archivo_pdf.url }}" target="_blank" class="btn btn-sm btn-outline-info">Ver PDF</a>
+          </td>
+          <td>{{ doc.fecha_emision|date:"Y-m-d H:i" }}</td>
+          <td class="text-center">
+            {% if doc.es_valido is True %}✔️
+            {% elif doc.es_valido is False %}❌
+            {% else %}⏳
             {% endif %}
-            <th>Observación</th> <!-- Nueva columna -->
-            <th>Acciones</th>
+          </td>
+          {% if user.rol == 'supervisor' %}
+            <td>{{ doc.creado_por.username }}</td>
+          {% endif %}
+          <td>{{ doc.observacion|default:"(Sin comentarios)" }}</td>
+          <td class="text-center">
+            {% if user == doc.creado_por %}
+              <a href="{% url 'editar_documento' doc.id %}" class="btn btn-sm btn-outline-warning">✏️ Editar</a>
+            {% else %}
+              —
+            {% endif %}
+          </td>
         </tr>
-        </thead>
-
-        <tbody>
-        {% for doc in documentos %}
-            <tr>
-                <td>{{ doc.id }}</td>
-                <td>{{ doc.tipo }}</td>
-                <td>{{ doc.ruta_puerto.puerto.nombre }}</td>
-                <td>{{ doc.ruta_puerto.ruta.nombre }}</td>
-                <td><a href="{{ doc.archivo_pdf.url }}" target="_blank">Ver PDF</a></td>
-                <td>{{ doc.fecha_emision|date:"Y-m-d H:i" }}</td>
-                <td class="text-center">
-                    {% if doc.es_valido is True %}
-                        ✔️
-                    {% elif doc.es_valido is False %}
-                        ❌
-                    {% else %}
-                        ⏳
-                    {% endif %}
-                </td>
-                {% if user.rol == 'supervisor' %}
-                    <td>{{ doc.creado_por.username }}</td>
-                {% endif %}
-                <td>{{ doc.observacion|default:"(Sin comentarios)" }}</td>
-                {% if user == doc.creado_por %}
-                    <td>
-                        <a href="{% url 'editar_documento' doc.id %}" class="btn btn-sm btn-outline-warning">Editar</a>
-                    </td>
-                {% else %}
-                    <td></td>
-                {% endif %}
-            </tr>
-        {% empty %}
-            <tr>
-                <td colspan="10" class="text-center">No hay documentos para mostrar.</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+      {% empty %}
+        <tr>
+          <td colspan="10" class="text-center">No hay documentos para mostrar.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}

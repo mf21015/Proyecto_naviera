@@ -1,10 +1,50 @@
 {% extends 'gestion/base.html' %}
 
 {% block content %}
-  <h2>Subir nuevo documento</h2>
-  <form method="post" enctype="multipart/form-data" class="mt-3">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Guardar</button>
-  </form>
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow border-0">
+        <div class="card-header text-white" style="background-color: #003049;">
+          <h4 class="mb-0">📄 Subir Nuevo Documento</h4>
+        </div>
+        <div class="card-body bg-light-subtle">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label for="id_tipo" class="form-label fw-semibold">Tipo de Documento</label>
+              {{ form.tipo }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_descripcion" class="form-label fw-semibold">Descripción</label>
+              {{ form.descripcion }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_ruta_puerto" class="form-label fw-semibold">Ruta y Puerto</label>
+              {{ form.ruta_puerto }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_archivo_pdf" class="form-label fw-semibold">Archivo PDF</label>
+              {{ form.archivo_pdf }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_embarque" class="form-label fw-semibold">Embarque</label>
+              {{ form.embarque }}
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <a href="{% url 'lista_documentos' %}" class="btn btn-outline-secondary">← Cancelar</a>
+              <button type="submit" class="btn btn-primary">Guardar Documento</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

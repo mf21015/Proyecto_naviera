@@ -38,5 +38,21 @@ urlpatterns = [
     path('usuarios/editar/<int:id>/', views.editar_usuario, name='editar_usuario'),
     path('usuarios/', views.lista_usuarios, name='lista_usuarios'),
 
+    # IMPORTADORES
+    path('importadores/', views.lista_importadores, name='lista_importadores'),
+
+    # EMBARQUES
+    path('embarques/', views.lista_embarques, name='lista_embarques'),
+
+    # SEGUIMIENTOS
+    path('seguimientos/', views.lista_seguimientos, name='lista_seguimientos'),
+
+    path('embarques/nuevo/', views.crear_embarque, name='crear_embarque'),
+    path('importadores/nuevo/', views.crear_importador, name='crear_importador'),
+    path('seguimientos/nuevo/', views.crear_seguimiento, name='crear_seguimiento'),
+
+
+
+
 ]
 

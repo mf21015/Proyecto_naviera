@@ -1,0 +1,63 @@
+{% extends 'gestion/base.html' %}
+{% load form_tags %}
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="card shadow border-0">
+        <div class="card-header text-white" style="background-color: #003049;">
+          <h4 class="mb-0">🚢 Registrar Nuevo Embarque</h4>
+        </div>
+        <div class="card-body bg-light-subtle">
+          <form method="POST">
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Número de Contenedor</label>
+                {{ form.numero_contenedor|add_class:"form-control" }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Descripción de Carga</label>
+                {{ form.descripcion_carga|add_class:"form-control" }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Fecha de Salida</label>
+                {{ form.fecha_salida|add_class:"form-control" }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Ubicación de Salida</label>
+                {{ form.ubicacion_salida|add_class:"form-control" }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Ubicación de Llegada</label>
+                {{ form.ubicacion_llegada|add_class:"form-control" }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Monto del Embarque</label>
+                {{ form.monto_embarque|add_class:"form-control" }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Buque del Embarque</label>
+                {{ form.buque_embarque|add_class:"form-control" }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Peso del Embarque</label>
+                {{ form.peso_embarque|add_class:"form-control" }}
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Importador</label>
+                {{ form.importador|add_class:"form-select" }}
+              </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+              <a href="{% url 'lista_embarques' %}" class="btn btn-outline-secondary">← Cancelar</a>
+              <button type="submit" class="btn btn-primary">Guardar Embarque</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

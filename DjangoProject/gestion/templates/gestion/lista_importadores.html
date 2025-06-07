@@ -1,0 +1,76 @@
+{% extends 'gestion/base.html' %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="card shadow border-0">
+    <div class="card-header text-white" style="background-color: #003049;">
+      <h4 class="mb-0">📋 Lista de Importadores</h4>
+    </div>
+
+    <div class="card-body bg-light-subtle">
+      <!-- Filtro -->
+      <form method="get" class="row g-2 mb-4 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Nombre</label>
+          <input type="text" name="nombre" placeholder="Nombre" class="form-control" value="{{ request.GET.nombre }}">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Actividad</label>
+          <input type="text" name="actividad" placeholder="Actividad" class="form-control" value="{{ request.GET.actividad }}">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Tipo de Persona</label>
+          <select name="tipo" class="form-select">
+            <option value="">Seleccione</option>
+            <option value="Jurídica" {% if request.GET.tipo == 'Jurídica' %}selected{% endif %}>Jurídica</option>
+            <option value="Natural" {% if request.GET.tipo == 'Natural' %}selected{% endif %}>Natural</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Correo</label>
+          <input type="text" name="correo" placeholder="Correo" class="form-control" value="{{ request.GET.correo }}">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Fecha de Registro</label>
+          <input type="date" name="fecha" class="form-control" value="{{ request.GET.fecha }}">
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+          <button type="submit" class="btn btn-primary w-100">🔍 Filtrar</button>
+          <a href="{% url 'lista_importadores' %}" class="btn btn-secondary w-100">🧹 Limpiar</a>
+        </div>
+      </form>
+
+      <!-- Tabla -->
+      <div class="table-responsive">
+        <table class="table table-hover table-bordered table-striped align-middle">
+          <thead class="table-primary">
+            <tr>
+              <th>👤 Nombre</th>
+              <th>🏭 Actividad</th>
+              <th>🧾 Tipo de Persona</th>
+              <th>📧 Correo</th>
+              <th>📅 Fecha de Registro</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for importador in importadores %}
+              <tr>
+                <td>{{ importador.nombre_importador }}</td>
+                <td>{{ importador.actividad_economica }}</td>
+                <td>{{ importador.tipo_persona }}</td>
+                <td>{{ importador.correo_importador }}</td>
+                <td>{{ importador.fecha_registro|date:"F j, Y" }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5" class="text-center text-muted">No se encontraron resultados.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

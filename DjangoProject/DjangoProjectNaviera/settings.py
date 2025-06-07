@@ -84,11 +84,11 @@ WSGI_APPLICATION = 'DjangoProjectNaviera.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql', # Motor de la base de datos
-        'NAME': 'naviera',   # Nombre de la base de datos
-        'USER': 'admin', # Usuario de la base de datos
-        'PASSWORD': 'admin', # Contraseña del usuario
-        'HOST': 'localhost', # Dirección del servidor de la base de datos
-        'PORT': '5432',
+        'NAME': 'postgres',   # Nombre de la base de datos
+        'USER': 'postgres.ktxrjcjfhgluesjteowc', # Usuario de la base de datos
+        'PASSWORD': 'Pamconmayonesa', # Contraseña del usuario
+        'HOST': 'aws-0-us-west-1.pooler.supabase.com', # Dirección del servidor de la base de datos
+        'PORT': '6543',
     }
 }
 

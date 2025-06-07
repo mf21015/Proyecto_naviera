@@ -1,0 +1,46 @@
+{% extends 'gestion/base.html' %}
+{% load form_tags %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow border-0">
+        <div class="card-header text-white" style="background-color: #003049;">
+          <h4 class="mb-0">📍 Registrar Seguimiento</h4>
+        </div>
+        <div class="card-body bg-light-subtle">
+          <form method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label for="id_embarque" class="form-label fw-semibold">Embarque</label>
+              {{ form.embarque|add_class:"form-select" }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_fecha_seguimiento" class="form-label fw-semibold">Fecha de Seguimiento</label>
+              {{ form.fecha_seguimiento|add_class:"form-control" }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_ubicacion_seguimiento" class="form-label fw-semibold">Ubicación</label>
+              {{ form.ubicacion_seguimiento|add_class:"form-control" }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_status_seguimiento" class="form-label fw-semibold">Estado del Seguimiento</label>
+              {{ form.status_seguimiento|add_class:"form-select" }}
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <a href="{% url 'lista_seguimientos' %}" class="btn btn-outline-secondary">← Cancelar</a>
+              <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

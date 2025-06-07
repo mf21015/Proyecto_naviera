@@ -1,0 +1,68 @@
+{% extends 'gestion/base.html' %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow border-0">
+        <div class="card-header text-white" style="background-color: #003049;">
+          <h4 class="mb-0">📝 Registrar Nuevo Importador</h4>
+        </div>
+
+        <div class="card-body bg-light-subtle">
+          <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label for="id_nombre_importador" class="form-label fw-semibold">Nombre</label>
+              {{ form.nombre_importador }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_numero_importador" class="form-label fw-semibold">Número de Importador</label>
+              {{ form.numero_importador }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_actividad_economica" class="form-label fw-semibold">Actividad Económica</label>
+              {{ form.actividad_economica }}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Tipo de Persona</label><br>
+              <div class="btn-group" role="group">
+                <input type="radio" class="btn-check" name="tipo_persona" id="persona_natural" value="Natural" {% if form.tipo_persona.value == 'Natural' %}checked{% endif %}>
+                <label class="btn btn-outline-primary" for="persona_natural">Natural</label>
+
+                <input type="radio" class="btn-check" name="tipo_persona" id="persona_juridica" value="Jurídica" {% if form.tipo_persona.value == 'Jurídica' %}checked{% endif %}>
+                <label class="btn btn-outline-primary" for="persona_juridica">Jurídica</label>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="id_direccion_importador" class="form-label fw-semibold">Dirección</label>
+              {{ form.direccion_importador }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_telefono_importador" class="form-label fw-semibold">Teléfono</label>
+              {{ form.telefono_importador }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_correo_importador" class="form-label fw-semibold">Correo Electrónico</label>
+              {{ form.correo_importador }}
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <a href="{% url 'lista_importadores' %}" class="btn btn-outline-secondary">← Cancelar</a>
+              <button type="submit" class="btn btn-success">Guardar Importador</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

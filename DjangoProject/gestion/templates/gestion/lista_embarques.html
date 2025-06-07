@@ -1,0 +1,78 @@
+{% extends 'gestion/base.html' %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="card shadow border-0">
+    <div class="card-header text-white" style="background-color: #003049;">
+      <h4 class="mb-0">🚢 Lista de Embarques</h4>
+    </div>
+
+    <div class="card-body bg-light-subtle">
+      <!-- Filtros -->
+      <form method="get" class="row g-2 mb-4 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">N° Contenedor</label>
+          <input type="text" name="contenedor" placeholder="Contenedor" class="form-control" value="{{ request.GET.contenedor }}">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Fecha de Salida</label>
+          <input type="date" name="fecha" class="form-control" value="{{ request.GET.fecha }}">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Ubicación Salida</label>
+          <input type="text" name="salida" placeholder="Puerto de salida" class="form-control" value="{{ request.GET.salida }}">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Ubicación Llegada</label>
+          <input type="text" name="llegada" placeholder="Puerto de llegada" class="form-control" value="{{ request.GET.llegada }}">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Buque</label>
+          <input type="text" name="buque" placeholder="Nombre del buque" class="form-control" value="{{ request.GET.buque }}">
+        </div>
+        {% if user.rol == "supervisor" %}
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Usuario</label>
+          <input type="text" name="usuario" placeholder="Nombre usuario" class="form-control" value="{{ request.GET.usuario }}">
+        </div>
+        {% endif %}
+        <div class="col-md-3 d-flex gap-2">
+          <button type="submit" class="btn btn-primary w-100">🔍 Filtrar</button>
+          <a href="{% url 'lista_embarques' %}" class="btn btn-secondary w-100">🧹 Limpiar</a>
+        </div>
+      </form>
+
+      <!-- Tabla -->
+      <div class="table-responsive">
+        <table class="table table-hover table-striped table-bordered align-middle">
+          <thead class="table-primary">
+            <tr>
+              <th>📦 Contenedor</th>
+              <th>📅 Fecha de Salida</th>
+              <th>🚢 Buque</th>
+              <th>👤 Importador</th>
+              <th>👨‍💻 Usuario</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for embarque in embarques %}
+              <tr>
+                <td>{{ embarque.numero_contenedor }}</td>
+                <td>{{ embarque.fecha_salida|date:"F j, Y" }}</td>
+                <td>{{ embarque.buque_embarque }}</td>
+                <td>{{ embarque.importador.nombre_importador }}</td>
+                <td>{{ embarque.usuario.username }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5" class="text-center text-muted">No se encontraron embarques con esos filtros.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

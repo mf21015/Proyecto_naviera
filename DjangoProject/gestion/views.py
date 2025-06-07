@@ -1,5 +1,4 @@
 import datetime
-from django.utils.timezone import make_aware
 from django.views.decorators.http import require_POST
 from .forms import DocumentoForm, PuertoForm, ValidarDocumentoForm, RutaForm, RutaPuertoForm, EditarDocumentoForm, \
     EditarUsuarioForm
@@ -7,14 +6,142 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Puerto, Ruta, RutaPuerto, CustomUser
-from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import CrearUsuarioForm
 from django.contrib.auth.decorators import user_passes_test
 import openpyxl
 from django.http import HttpResponse
-from .models import Documento
 import os
 from django.contrib.auth.hashers import make_password
+from .models import Embarque, Importado, Seguimiento
+from django.shortcuts import redirect
+from .forms import EmbarqueForm
+from .forms import ImportadoForm
+from .forms import SeguimientoForm
+from django.contrib.auth.decorators import login_required
+from .models import Seguimiento
+
+
+
+@login_required
+def crear_seguimiento(request):
+    if request.method == 'POST':
+        form = SeguimientoForm(request.POST)
+        if form.is_valid():
+            seguimiento = form.save(commit=False)
+            seguimiento.usuario = request.user
+            seguimiento.save()
+            return redirect('lista_seguimientos')
+    else:
+        form = SeguimientoForm()
+    return render(request, 'gestion/formulario_seguimiento.html', {'form': form})
+
+
+@login_required
+def crear_importador(request):
+    if request.method == 'POST':
+        form = ImportadoForm(request.POST)
+        if form.is_valid():
+            importador = form.save(commit=False)
+            if hasattr(importador, 'usuario'):
+                importador.usuario = request.user
+            importador.save()
+            return redirect('lista_importadores')
+    else:
+        form = ImportadoForm()
+    return render(request, 'gestion/formulario_importador.html', {'form': form})
+
+
+@login_required
+def crear_embarque(request):
+    if request.method == 'POST':
+        form = EmbarqueForm(request.POST)
+        if form.is_valid():
+            embarque = form.save(commit=False)
+            embarque.usuario = request.user
+            embarque.save()
+            return redirect('lista_embarques')
+    else:
+        form = EmbarqueForm()
+    return render(request, 'gestion/formulario_embarque.html', {'form': form})
+
+
+@login_required
+def lista_importadores(request):
+    if request.user.rol == 'supervisor':
+        importadores = Importado.objects.all()
+    else:
+        importadores = Importado.objects.filter(usuario=request.user)
+
+    # Filtros
+    nombre = request.GET.get('nombre')
+    actividad = request.GET.get('actividad')
+    tipo = request.GET.get('tipo')
+    correo = request.GET.get('correo')
+    fecha = request.GET.get('fecha')
+
+    if nombre:
+        importadores = importadores.filter(nombre_importador__icontains=nombre)
+    if actividad:
+        importadores = importadores.filter(actividad_economica__icontains=actividad)
+    if tipo:
+        importadores = importadores.filter(tipo_persona__iexact=tipo)
+    if correo:
+        importadores = importadores.filter(correo_importador__icontains=correo)
+    if fecha:
+        importadores = importadores.filter(fecha_registro=fecha)
+
+    return render(request, 'gestion/lista_importadores.html', {'importadores': importadores})
+
+@login_required
+def lista_embarques(request):
+    if request.user.rol == 'supervisor':
+        embarques = Embarque.objects.all()
+    else:
+        embarques = Embarque.objects.filter(usuario=request.user)
+
+    # Filtros
+    contenedor = request.GET.get('contenedor')
+    fecha = request.GET.get('fecha')
+    salida = request.GET.get('salida')
+    llegada = request.GET.get('llegada')
+    buque = request.GET.get('buque')
+    usuario = request.GET.get('usuario')
+
+    if contenedor:
+        embarques = embarques.filter(numero_contenedor__icontains=contenedor)
+    if fecha:
+        embarques = embarques.filter(fecha_salida=fecha)
+    if salida:
+        embarques = embarques.filter(ubicacion_salida__icontains=salida)
+    if llegada:
+        embarques = embarques.filter(ubicacion_llegada__icontains=llegada)
+    if buque:
+        embarques = embarques.filter(buque_embarque__icontains=buque)
+    if usuario and request.user.rol == 'supervisor':
+        embarques = embarques.filter(usuario__username__icontains=usuario)
+
+    return render(request, 'gestion/lista_embarques.html', {'embarques': embarques})
+
+
+def lista_seguimientos(request):
+    seguimientos = Seguimiento.objects.all() if request.user.rol == 'supervisor' else Seguimiento.objects.filter(usuario=request.user)
+
+    # Filtros
+    fecha = request.GET.get('fecha')
+    ubicacion = request.GET.get('ubicacion')
+    status = request.GET.get('status')
+    contenedor = request.GET.get('contenedor')
+
+    if fecha:
+        seguimientos = seguimientos.filter(fecha_seguimiento=fecha)
+    if ubicacion:
+        seguimientos = seguimientos.filter(ubicacion_seguimiento__icontains=ubicacion)
+    if status:
+        seguimientos = seguimientos.filter(status_seguimiento__icontains=status)
+    if contenedor:
+        seguimientos = seguimientos.filter(embarque__numero_contenedor__icontains=contenedor)
+
+    return render(request, 'gestion/lista_seguimientos.html', {'seguimientos': seguimientos})
 
 
 @login_required
@@ -36,6 +163,7 @@ def lista_usuarios(request):
         usuarios = usuarios.filter(puerto__id=puerto_id)
 
     puertos = Puerto.objects.all()
+
 
     return render(request, 'gestion/usuarios/lista_usuarios.html', {
         'usuarios': usuarios,
@@ -69,12 +197,12 @@ def editar_documento(request, id):
 
     if request.user != doc.creado_por:
         messages.error(request, "No tienes permiso para editar este documento.")
-        return redirect('lista_dolista_documentos')
+        return redirect('lista_documentos')  # corregí 'lista_dolista_documentos'
 
     archivo_anterior = doc.archivo_pdf.path  # Guarda el path del archivo viejo
 
     if request.method == 'POST':
-        form = EditarDocumentoForm(request.POST, request.FILES, instance=doc)
+        form = EditarDocumentoForm(request.POST, request.FILES, instance=doc, user=request.user)
         if form.is_valid():
             if 'archivo_pdf' in request.FILES:
                 if os.path.isfile(archivo_anterior):
@@ -83,9 +211,12 @@ def editar_documento(request, id):
             messages.success(request, "Documento actualizado correctamente.")
             return redirect('lista_documentos')
     else:
-        form = EditarDocumentoForm(instance=doc)
+        form = EditarDocumentoForm(instance=doc, user=request.user)
 
-    return render(request, 'gestion/documentos/editar.html', {'form': form, 'doc': doc})
+    return render(request, 'gestion/documentos/editar.html', {
+        'form': form,
+        'doc': doc
+    })
 
 
 @login_required
@@ -382,6 +513,10 @@ def comparar_documentos(request):
         documentos = documentos.exclude(es_valido__isnull=True)
     if usuario:
         documentos = documentos.filter(creado_por__username__icontains=usuario)
+    # Filtro por tipo de documento
+    tipo = request.GET.get('tipo')
+    if tipo:
+        documentos = documentos.filter(tipo=tipo)
 
     # 🔍 NUEVOS FILTROS DE FECHA
     fecha_str = request.GET.get('fecha')  # Campo único

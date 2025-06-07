@@ -94,6 +94,19 @@
                 {% if user.is_authenticated %}
                     <!-- Opciones para usuarios autenticados -->
                     <li class="nav-item">
+                        <a class="nav-link text-success fw-bold" href="{% url 'crear_seguimiento' %}">
+                            <i class="bi bi-clipboard-plus"></i>
+                            <span class="d-lg-inline">Registrar seguimiento</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'crear_embarque' %}">
+                            <i class="bi bi-clipboard-plus"></i>
+                            <span class="d-lg-inline">Registrar embarque</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'subir_documento' %}">
                             <i class="bi bi-cloud-upload"></i>
                             <span class="d-lg-inline">Subir documento</span>
@@ -105,7 +118,6 @@
                             <span class="d-lg-inline">Ver documentos</span>
                         </a>
                     </li>
-
                     {% if user.rol == 'supervisor' %}
                         <!-- Menú desplegable para supervisor en desktop, items separados en mobile -->
                         <li class="nav-item dropdown d-none d-lg-block">
@@ -115,6 +127,26 @@
                                 Gestión
                             </a>
                             <ul class="dropdown-menu dropdown-menu-dark">
+                                <ul class="list-unstyled">
+                                    <li><a class="dropdown-item" href="{% url 'lista_importadores' %}">📋 Lista de Importadores</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'crear_importador' %}">➕ Nuevo Importador</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'lista_embarques' %}">🚢 Lista de Embarques</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'crear_embarque' %}">➕ Nuevo Embarque</a></li>
+                                </ul>
+
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'lista_seguimientos' %}">
+                                        📋 <span class="fw-bold">Ver Seguimientos</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item text-success" href="{% url 'crear_seguimiento' %}">
+                                        ➕ <span class="fw-bold">Registrar Seguimiento</span>
+                                    </a>
+                                </li>
+
+
+
                                 <li><a class="dropdown-item" href="{% url 'comparar_documentos' %}">
                                     <i class="bi bi-files"></i> Comparar documentos
                                 </a></li>
