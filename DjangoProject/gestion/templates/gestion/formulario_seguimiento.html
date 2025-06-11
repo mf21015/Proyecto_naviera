@@ -2,38 +2,134 @@
 {% load form_tags %}
 
 {% block content %}
-<div class="container py-4">
+<style>
+  body {
+    background-color: #e6f0f5;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .card {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 48, 73, 0.15);
+    transition: all 0.3s ease-in-out;
+  }
+
+  .card:hover {
+    box-shadow: 0 6px 30px rgba(0, 48, 73, 0.25);
+    transform: scale(1.01);
+  }
+
+  .card-header {
+    background-color: #003049 !important;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.5rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 3px solid #006494;
+  }
+
+  h4.mb-0::before {
+    content: "🚢 ";
+    margin-right: 0.5rem;
+  }
+
+  .card-body {
+    background-color: #f4faff;
+    padding: 2rem;
+  }
+
+  label.form-label {
+    color: #003049;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .form-control, .form-select {
+    border-radius: 0.5rem;
+    border: 1px solid #c3d6df;
+    background-color: #ffffff;
+    padding: 0.5rem 1rem;
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  }
+
+  .form-control:focus, .form-select:focus {
+    border-color: #006494;
+    box-shadow: 0 0 0 0.2rem rgba(0, 100, 148, 0.25);
+  }
+
+  .btn-primary {
+    background-color: #003049;
+    border-color: #003049;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    transition: background-color 0.3s ease-in-out;
+  }
+
+  .btn-primary:hover {
+    background-color: #001d2d;
+    border-color: #001d2d;
+  }
+
+  .btn-outline-secondary {
+    border-radius: 0.5rem;
+    font-weight: 500;
+    padding: 0.5rem 1.25rem;
+    color: #003049;
+    border-color: #003049;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  }
+
+  .btn-outline-secondary:hover {
+    background-color: #003049;
+    color: #ffffff;
+  }
+
+  .d-grid .btn {
+    min-width: 120px;
+  }
+
+</style>
+
+<div class="container">
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="card shadow border-0">
-        <div class="card-header text-white" style="background-color: #003049;">
-          <h4 class="mb-0">📍 Registrar Seguimiento</h4>
+        <div class="card-header text-white">
+          <h4 class="mb-0">Registrar Seguimiento</h4>
         </div>
         <div class="card-body bg-light-subtle">
           <form method="POST">
             {% csrf_token %}
 
             <div class="mb-3">
-              <label for="id_embarque" class="form-label fw-semibold">Embarque</label>
+              <label for="id_embarque" class="form-label">Embarque</label>
               {{ form.embarque|add_class:"form-select" }}
             </div>
 
             <div class="mb-3">
-              <label for="id_fecha_seguimiento" class="form-label fw-semibold">Fecha de Seguimiento</label>
+              <label for="id_fecha_seguimiento" class="form-label">Fecha de Seguimiento</label>
               {{ form.fecha_seguimiento|add_class:"form-control" }}
             </div>
 
             <div class="mb-3">
-              <label for="id_ubicacion_seguimiento" class="form-label fw-semibold">Ubicación</label>
+              <label for="id_ubicacion_seguimiento" class="form-label">Ubicación</label>
               {{ form.ubicacion_seguimiento|add_class:"form-control" }}
             </div>
 
             <div class="mb-3">
-              <label for="id_status_seguimiento" class="form-label fw-semibold">Estado del Seguimiento</label>
+              <label for="id_status_seguimiento" class="form-label">Estado del Seguimiento</label>
               {{ form.status_seguimiento|add_class:"form-select" }}
             </div>
 
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
               <a href="{% url 'lista_seguimientos' %}" class="btn btn-outline-secondary">← Cancelar</a>
               <button type="submit" class="btn btn-primary">Guardar</button>
             </div>
