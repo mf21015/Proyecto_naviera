@@ -1,51 +1,160 @@
 {% extends 'gestion/base.html' %}
 {% load form_tags %}
+
 {% block content %}
-<div class="container py-4">
+<style>
+  body {
+    background-color: #eef4f8;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .container {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .card {
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 6px 28px rgba(0, 48, 73, 0.12);
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    border: none;
+  }
+
+  .card:hover {
+    box-shadow: 0 8px 36px rgba(0, 48, 73, 0.2);
+    transform: scale(1.01);
+  }
+
+  .card-header {
+    background: linear-gradient(to right, #003049, #006494);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.6rem;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 2px solid #003049;
+  }
+
+  .card-body {
+    background-color: #f9fcfe;
+    padding: 2rem;
+  }
+
+  h4.mb-0::before {
+    content: "🚢 ";
+    margin-right: 0.5rem;
+  }
+
+  label.form-label {
+    color: #003049;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    display: block;
+  }
+
+  .form-control,
+  .form-select {
+    border-radius: 10px;
+    border: 1px solid #c0d3df;
+    background-color: #ffffff;
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: #0077b6;
+    box-shadow: 0 0 0 0.2rem rgba(0, 119, 182, 0.25);
+    outline: none;
+  }
+
+  .btn-primary {
+    background-color: #003049;
+    border-color: #003049;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.6rem 1.4rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    background-color: #001d2d;
+    border-color: #001d2d;
+  }
+
+  .btn-outline-secondary {
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.6rem 1.4rem;
+    color: #003049;
+    border: 1px solid #003049;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .btn-outline-secondary:hover {
+    background-color: #003049;
+    color: #ffffff;
+  }
+
+  .row.g-3 .col-md-6 {
+    margin-bottom: 1.2rem;
+  }
+
+  .d-grid .btn {
+    min-width: 140px;
+  }
+
+</style>
+
+<div class="container">
   <div class="row justify-content-center">
     <div class="col-md-10">
-      <div class="card shadow border-0">
-        <div class="card-header text-white" style="background-color: #003049;">
-          <h4 class="mb-0">🚢 Registrar Nuevo Embarque</h4>
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0">Registrar Nuevo Embarque</h4>
         </div>
-        <div class="card-body bg-light-subtle">
+        <div class="card-body">
           <form method="POST">
             {% csrf_token %}
             <div class="row g-3">
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Número de Contenedor</label>
+                <label class="form-label">Número de Contenedor</label>
                 {{ form.numero_contenedor|add_class:"form-control" }}
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Descripción de Carga</label>
+                <label class="form-label">Descripción de Carga</label>
                 {{ form.descripcion_carga|add_class:"form-control" }}
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Fecha de Salida</label>
+                <label class="form-label">Fecha de Salida</label>
                 {{ form.fecha_salida|add_class:"form-control" }}
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Ubicación de Salida</label>
+                <label class="form-label">Ubicación de Salida</label>
                 {{ form.ubicacion_salida|add_class:"form-control" }}
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Ubicación de Llegada</label>
+                <label class="form-label">Ubicación de Llegada</label>
                 {{ form.ubicacion_llegada|add_class:"form-control" }}
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Monto del Embarque</label>
+                <label class="form-label">Monto del Embarque</label>
                 {{ form.monto_embarque|add_class:"form-control" }}
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Buque del Embarque</label>
+                <label class="form-label">Buque del Embarque</label>
                 {{ form.buque_embarque|add_class:"form-control" }}
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Peso del Embarque</label>
+                <label class="form-label">Peso del Embarque</label>
                 {{ form.peso_embarque|add_class:"form-control" }}
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-semibold">Importador</label>
+                <label class="form-label">Importador</label>
                 {{ form.importador|add_class:"form-select" }}
               </div>
             </div>
