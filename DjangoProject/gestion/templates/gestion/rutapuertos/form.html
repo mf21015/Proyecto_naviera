@@ -1,10 +1,148 @@
 {% extends 'gestion/base.html' %}
 {% block content %}
-<h2>{{ accion }} Ruta - Puerto</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn btn-primary">{{ accion }}</button>
-  <a href="{% url 'lista_rutapuertos' %}" class="btn btn-secondary">Cancelar</a>
-</form>
+<style>
+  body {
+    background: linear-gradient(135deg, #f8fbfd 0%, #e8f4f8 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+  }
+
+  h2 {
+    color: #334155;
+    font-weight: 600;
+    font-size: 1.75rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    letter-spacing: -0.025em;
+  }
+
+  h2::before {
+    content: "🧭 ";
+    margin-right: 0.5rem;
+  }
+
+  .form-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(71, 85, 105, 0.08);
+    border: 1px solid rgba(226, 232, 240, 0.5);
+    padding: 2rem;
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  form p {
+    margin-bottom: 1.5rem;
+  }
+
+  label {
+    color: #334155;
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+
+  select, input {
+    width: 100%;
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 0.75rem 1.2rem;
+    font-size: 0.95rem;
+    color: #475569;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+  }
+
+  select:focus, input:focus {
+    border-color: #64748b;
+    box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.1);
+    outline: none;
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-1px);
+  }
+
+  .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #475569 0%, #64748b 100%);
+    border: none;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.75rem 1.8rem;
+    box-shadow: 0 4px 12px rgba(71, 85, 105, 0.2);
+    color: white;
+    transition: all 0.3s ease;
+    min-width: 140px;
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #334155 0%, #475569 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(71, 85, 105, 0.3);
+  }
+
+  .btn-secondary {
+    background: rgba(100, 116, 139, 0.1);
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.75rem 1.8rem;
+    color: #64748b;
+    transition: all 0.3s ease;
+    min-width: 140px;
+    text-align: center;
+  }
+
+  .btn-secondary:hover {
+    background: #64748b;
+    color: #ffffff;
+    border-color: #64748b;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(100, 116, 139, 0.2);
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<div class="container">
+  <h2>{{ accion }} Ruta - Puerto</h2>
+
+  <div class="form-container">
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+
+      <div class="button-group">
+        <button type="submit" class="btn btn-primary">
+          {% if accion == "Crear" %}➕ {{ accion }}{% elif accion == "Editar" %}✏️ {{ accion }}{% else %}{{ accion }}{% endif %}
+        </button>
+        <a href="{% url 'lista_rutapuertos' %}" class="btn btn-secondary">← Cancelar</a>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}
