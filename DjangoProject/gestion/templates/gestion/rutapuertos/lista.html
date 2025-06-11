@@ -1,24 +1,197 @@
 {% extends 'gestion/base.html' %}
+
 {% block content %}
-<h2>Asignaciones de Puertos a Rutas</h2>
-<a href="{% url 'crear_rutapuerto' %}" class="btn btn-success mb-3">Asignar nuevo</a>
-<table class="table table-bordered">
-  <thead>
-    <tr><th>ID</th><th>Ruta</th><th>Puerto</th><th>Orden</th><th>Acciones</th></tr>
-  </thead>
-  <tbody>
-    {% for rp in rutapuertos %}
-      <tr>
-        <td>{{ rp.id }}</td>
-        <td>{{ rp.ruta.nombre }}</td>
-        <td>{{ rp.puerto.nombre }}</td>
-        <td>{{ rp.orden }}</td>
-        <td>
-          <a href="{% url 'editar_rutapuerto' rp.id %}" class="btn btn-warning btn-sm">Editar</a>
-          <a href="{% url 'eliminar_rutapuerto' rp.id %}" class="btn btn-danger btn-sm">Eliminar</a>
-        </td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<style>
+  body {
+    background: linear-gradient(135deg, #f8fbfd, #e8f4f8);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+  }
+
+  .container {
+    padding: 2.5rem 2rem;
+  }
+
+  h2 {
+    color: #334155;
+    font-weight: 600;
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+    text-align: left;
+    letter-spacing: -0.025em;
+  }
+
+  h2::before {
+    content: "🧭 ";
+    margin-right: 0.5rem;
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, #059669, #10b981);
+    border: none;
+    border-radius: 12px;
+    font-weight: 500;
+    padding: 0.6rem 1.4rem;
+    transition: 0.3s ease;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+    letter-spacing: 0.025em;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-success:hover {
+    background: linear-gradient(135deg, #047857, #059669);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(5, 150, 105, 0.3);
+  }
+
+  .table-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(71, 85, 105, 0.1);
+    padding: 1rem;
+    overflow: hidden;
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  .table {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .table thead {
+    background: linear-gradient(135deg, #475569, #64748b);
+    color: #ffffff;
+  }
+
+  .table thead th {
+    border: none;
+    padding: 1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .table thead th:first-child {
+    border-top-left-radius: 16px;
+  }
+
+  .table thead th:last-child {
+    border-top-right-radius: 16px;
+  }
+
+  .table tbody tr {
+    transition: 0.2s ease;
+    cursor: pointer;
+  }
+
+  .table tbody tr:hover {
+    background-color: rgba(100, 116, 139, 0.05);
+    transform: scale(1.001);
+  }
+
+  .table tbody td {
+    padding: 0.9rem;
+    font-size: 0.9rem;
+    color: #475569;
+    text-align: center;
+    border-top: 1px solid rgba(226, 232, 240, 0.5);
+  }
+
+  .table tbody td:nth-child(2)::before {
+    content: "🛣️ ";
+    opacity: 0.7;
+    margin-right: 0.3rem;
+  }
+
+  .table tbody td:nth-child(3)::before {
+    content: "⚓ ";
+    opacity: 0.7;
+    margin-right: 0.3rem;
+  }
+
+  .btn-sm {
+    border-radius: 8px;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+    font-weight: 500;
+    margin: 0 0.2rem;
+    transition: all 0.3s ease;
+  }
+
+  .btn-warning {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    border: none;
+    color: white;
+  }
+
+  .btn-warning:hover {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+    transform: translateY(-1px);
+  }
+
+  .btn-danger {
+    background: linear-gradient(135deg, #ef4444, #f87171);
+    border: none;
+    color: white;
+  }
+
+  .btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    transform: translateY(-1px);
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<div class="container">
+  <h2>Asignaciones de Puertos a Rutas</h2>
+  <a href="{% url 'crear_rutapuerto' %}" class="btn btn-success mb-3">➕ Asignar nuevo</a>
+
+  <div class="table-container">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Ruta</th>
+          <th>Puerto</th>
+          <th>Orden</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for rp in rutapuertos %}
+        <tr>
+          <td>{{ rp.id }}</td>
+          <td>{{ rp.ruta.nombre }}</td>
+          <td>{{ rp.puerto.nombre }}</td>
+          <td>{{ rp.orden }}</td>
+          <td>
+            <a href="{% url 'editar_rutapuerto' rp.id %}" class="btn btn-warning btn-sm">✏️ Editar</a>
+            <a href="{% url 'eliminar_rutapuerto' rp.id %}" class="btn btn-danger btn-sm">🗑️ Eliminar</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" style="text-align: center; color: #94a3b8; padding: 2rem;">
+            No hay asignaciones registradas.<br>
+            <small>¡Empieza asignando un puerto a una ruta!</small>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 {% endblock %}
