@@ -1,12 +1,242 @@
 {% extends 'gestion/base.html' %}
 
 {% block content %}
+<style>
+  body {
+    background: linear-gradient(135deg, #f8fbfd 0%, #e8f4f8 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+  }
+
+  .container {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .card {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(71, 85, 105, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+  }
+
+  .card:hover {
+    box-shadow: 0 20px 60px rgba(71, 85, 105, 0.12);
+    transform: translateY(-2px);
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, #475569 0%, #64748b 100%) !important;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 1.5rem;
+    padding: 1.5rem 2rem;
+    border-bottom: none;
+    position: relative;
+  }
+
+  .card-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  }
+
+  .card-header h4::before {
+    content: "📄 ";
+    margin-right: 0.8rem;
+    font-size: 1.2em;
+  }
+
+  .card-body {
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%) !important;
+    padding: 2.5rem;
+  }
+
+  .form-label {
+    color: #334155;
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    letter-spacing: 0.025em;
+  }
+
+  .form-control,
+  .form-select {
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 0.75rem 1.2rem;
+    font-size: 0.95rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #475569;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: #64748b;
+    box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.1);
+    outline: none;
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-1px);
+  }
+
+  .form-control:hover,
+  .form-select:hover {
+    border-color: #cbd5e1;
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .form-control::placeholder {
+    color: #94a3b8;
+  }
+
+  /* Estilo especial para el input de archivo */
+  input[type="file"] {
+    border-radius: 12px;
+    border: 1.5px dashed #cbd5e1;
+    background: rgba(248, 250, 252, 0.8);
+    padding: 1rem 1.2rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  input[type="file"]:hover {
+    border-color: #94a3b8;
+    background: rgba(248, 250, 252, 0.95);
+  }
+
+  input[type="file"]:focus {
+    border-color: #64748b;
+    border-style: solid;
+    box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.1);
+    outline: none;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #475569 0%, #64748b 100%);
+    border: none;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.75rem 1.8rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(71, 85, 105, 0.2);
+    letter-spacing: 0.025em;
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #334155 0%, #475569 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(71, 85, 105, 0.3);
+  }
+
+  .btn-outline-secondary {
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.75rem 1.8rem;
+    color: #64748b;
+    border: 1.5px solid #e2e8f0;
+    background: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.025em;
+  }
+
+  .btn-outline-secondary:hover {
+    background: #64748b;
+    color: #ffffff;
+    border-color: #64748b;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(100, 116, 139, 0.2);
+  }
+
+  .mb-3 {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .d-grid .btn {
+    min-width: 150px;
+  }
+
+  /* Mejora visual para el contenedor principal */
+  .col-md-8 {
+    position: relative;
+  }
+
+  .col-md-8::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    background: linear-gradient(135deg, rgba(100, 116, 139, 0.05) 0%, rgba(148, 163, 184, 0.05) 100%);
+    border-radius: 30px;
+    z-index: -1;
+  }
+
+  /* Textarea específico */
+  textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  /* Responsive improvements */
+  @media (max-width: 768px) {
+    .container {
+      padding-top: 1.5rem;
+      padding-bottom: 1.5rem;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    .card-header {
+      padding: 1.2rem 1.5rem;
+      font-size: 1.3rem;
+    }
+
+    .d-grid.gap-2.d-md-flex {
+      gap: 0.75rem !important;
+    }
+  }
+
+  /* Animación para el área de drop de archivos */
+  input[type="file"] {
+    position: relative;
+  }
+
+  input[type="file"]::file-selector-button {
+    background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+    color: #475569;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  input[type="file"]::file-selector-button:hover {
+    background: linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%);
+    transform: translateY(-1px);
+  }
+</style>
+
 <div class="container py-4">
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="card shadow border-0">
         <div class="card-header text-white" style="background-color: #003049;">
-          <h4 class="mb-0">📄 Subir Nuevo Documento</h4>
+          <h4 class="mb-0">Subir Nuevo Documento</h4>
         </div>
         <div class="card-body bg-light-subtle">
           <form method="post" enctype="multipart/form-data">
